@@ -2,9 +2,18 @@ const ServiceRequest = require("../models/servicerequest");
 
 const CreateServiceRequest = async (req, res) => {
   try {
+    const { bookingSlot } = req.body;
+    const existingRequest = await ServiceRequest.findOne({ bookingSlot });
+    if (existingRequest) {
+      return res.status(400).json({
+        status: 400,
+        message: "Booking slot is already taken",
+      });
+    }
     const serviceRequest = new ServiceRequest(req.body);
     await serviceRequest.save();
     res.status(201).json({
+      status: 201,
       message: "Service request created successfully",
       serviceRequest,
     });
@@ -18,7 +27,9 @@ const CreateServiceRequest = async (req, res) => {
 
 const GetServiceRequests = async (req, res) => {
   try {
-    const serviceRequests = await ServiceRequest.find();
+    const serviceRequests = await ServiceRequest.find({
+      userId: req.params.userId,
+    });
     res.status(200).json({
       message: "Service requests fetched successfully",
       serviceRequests,
@@ -80,11 +91,13 @@ const UpdateServiceRequest = async (req, res) => {
     serviceRequest.status = req.body.status;
     await serviceRequest.save();
     res.status(200).json({
+      status: 200,
       message: "Service request updated successfully",
       serviceRequest,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(400).json({
+      status: 400,
       message: "Error while updating service request",
       error: error.message,
     });

@@ -18,6 +18,21 @@ const ServiceSchema = new mongoose.Schema({
     enum: ["pending", "accepted", "completed", "cancelled"],
     default: "pending",
   },
+  customerName: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
+  City: {
+    type: String,
+  },
+  pincode: {
+    type: Number,
+  },
+  bookingSlot: {
+    type: Date,
+  },
 });
 
 module.exports = mongoose.model("ServiceRequest", ServiceSchema);
