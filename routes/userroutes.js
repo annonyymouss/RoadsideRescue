@@ -5,14 +5,16 @@ const {
   GetProffesionalUsers,
   SaveSearchTerms,
   fetchSearchTems,
+  UpdateUser,
 } = require("../Controllers/User");
 
 const router = express.Router();
 
 router.post("/register", createUser);
 router.post("/login", Login);
-router.get("/professional/:text", GetProffesionalUsers);
+router.post("/professional/:text", GetProffesionalUsers);
 router.post("/save-search", SaveSearchTerms);
 router.get("/getsearch", fetchSearchTems);
+router.patch("/updateUser/:id", UpdateUser);
 
 module.exports = router;

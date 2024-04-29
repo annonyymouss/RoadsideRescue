@@ -56,6 +56,32 @@ const Login = async (req, res) => {
   }
 };
 
+const UpdateUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!user) {
+      return res.status(404).json({
+        status: 404,
+        message: "User not found",
+      });
+    }
+    res.status(200).json({
+      status: 200,
+      message: "User updated successfully",
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: "Error while updating user",
+      error: error.message,
+    });
+  }
+};
+
 const GetProffesionalUsers = async (req, res) => {
   try {
     console.log(req.params.text.replace("/%20/g", " "));
@@ -64,8 +90,19 @@ const GetProffesionalUsers = async (req, res) => {
     });
     // 2. Extract service IDs from the found services
     const serviceIds = services.map((service) => service._id.toString());
-    // 3. Find User documents with services matching the extracted IDs
+    // 3. Find User documents with services matching the extracted IDs within a 5 km radius
     const users = await User.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: "Point",
+            coordinates: [parseFloat(req.query.longitude), parseFloat(req.query.latitude)],
+          },
+          distanceField: "distance",
+          maxDistance: 5000,
+          spherical: true,
+        },
+      },
       {
         $match: {
           services: { $in: serviceIds },
@@ -127,4 +164,5 @@ module.exports = {
   GetProffesionalUsers,
   SaveSearchTerms,
   fetchSearchTems,
+  UpdateUser,
 };
