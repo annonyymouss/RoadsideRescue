@@ -1,8 +1,11 @@
 const ServiceRequest = require("../models/servicerequest");
-
+const SendEmailFunction = require("../utils/emailservice");
+const User = require("../models/usermodel");
 const CreateServiceRequest = async (req, res) => {
   try {
     const { bookingSlot } = req.body;
+    const user = await User.findById(req.body.userId);
+    const proffesional = await User.findById(req.body.proffesionalId);
     const existingRequest = await ServiceRequest.findOne({ bookingSlot });
     if (existingRequest) {
       return res.status(400).json({
@@ -12,6 +15,12 @@ const CreateServiceRequest = async (req, res) => {
     }
     const serviceRequest = new ServiceRequest(req.body);
     await serviceRequest.save();
+    await SendEmailFunction(
+      user.email,
+      proffesional.email,
+      "Service Request",
+      `Your service request has been created successfully`
+    );
     res.status(201).json({
       status: 201,
       message: "Service request created successfully",

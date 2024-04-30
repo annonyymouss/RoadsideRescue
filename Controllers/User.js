@@ -93,19 +93,16 @@ const GetProffesionalUsers = async (req, res) => {
     // 3. Find User documents with services matching the extracted IDs within a 5 km radius
     const users = await User.aggregate([
       {
-        $geoNear: {
-          near: {
-            type: "Point",
-            coordinates: [parseFloat(req.query.longitude), parseFloat(req.query.latitude)],
-          },
-          distanceField: "distance",
-          maxDistance: 5000,
-          spherical: true,
-        },
-      },
-      {
         $match: {
           services: { $in: serviceIds },
+          "location.latitude": {
+            $gte: req.body.latitude - 0.09,
+            $lte: req.body.latitude + 0.09,
+          },
+          "location.longitude": {
+            $gte: req.body.longitude - 0.09,
+            $lte: req.body.longitude + 0.09,
+          },
           role: "professional",
         },
       },

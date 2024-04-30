@@ -25,16 +25,14 @@ const UserSchema = new mongoose.Schema(
     availability: {
       type: String,
     },
-    location: [
-      {
-        latitude: {
-          type: String,
-        },
-        longitude: {
-          type: String,
-        },
+    location: {
+      latitude: {
+        type: String,
       },
-    ],
+      longitude: {
+        type: String,
+      },
+    },
   },
   {
     timestamps: true,
