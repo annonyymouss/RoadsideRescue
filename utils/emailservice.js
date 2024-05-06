@@ -10,7 +10,7 @@ const SendEmailFunction = async (from, to, subject, text) => {
     });
 
     mg.messages.create("sandboxb41e0afe906849e9946c1f2b66241c9d.mailgun.org", {
-      from: from,
+      from: "Mailgun Sandbox <postmaster@sandboxb41e0afe906849e9946c1f2b66241c9d.mailgun.org>",
       to: to,
       subject: subject,
       text: text,

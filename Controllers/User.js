@@ -95,18 +95,35 @@ const GetProffesionalUsers = async (req, res) => {
       {
         $match: {
           services: { $in: serviceIds },
-          "location.latitude": {
-            $gte: req.body.latitude - 0.09,
-            $lte: req.body.latitude + 0.09,
-          },
-          "location.longitude": {
-            $gte: req.body.longitude - 0.09,
-            $lte: req.body.longitude + 0.09,
-          },
           role: "professional",
+          $and: [
+            {
+              $or: [
+                { "location.latitude": { $exists: false } }, // Check if latitude field does not exist
+                {
+                  "location.latitude": {
+                    $gte: req.body.latitude - 0.09,
+                    $lte: req.body.latitude + 0.09,
+                  },
+                },
+              ],
+            },
+            {
+              $or: [
+                { "location.longitude": { $exists: false } }, // Check if longitude field does not exist
+                {
+                  "location.longitude": {
+                    $gte: req.body.longitude - 0.09,
+                    $lte: req.body.longitude + 0.09,
+                  },
+                },
+              ],
+            },
+          ],
         },
       },
     ]);
+
 
     res.status(200).json({
       status: 200,
