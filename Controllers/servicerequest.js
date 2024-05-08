@@ -15,12 +15,7 @@ const CreateServiceRequest = async (req, res) => {
     }
     const serviceRequest = new ServiceRequest(req.body);
     await serviceRequest.save();
-    await SendEmailFunction(
-      user.email,
-      proffesional.email,
-      "Service Request",
-      `Your service request has been created successfully`
-    );
+
     res.status(201).json({
       status: 201,
       message: "Service request created successfully",
